@@ -1,11 +1,19 @@
-SELECT ROUND((COUNT( DISTINCT a1.player_id)*1.0)/(
-    SELECT COUNT(DISTINCT player_id )  -- get the total players count
-    FROM Activity 
-),2) as fraction
-FROM (
-    SELECT player_id ,MIN(event_date ) as event_date -- Return first logged in day
-    FROM Activity
-    GROUP BY  player_id
-) a1
-INNER JOIN Activity a2 ON a1.player_id = a2.player_id 
-WHERE DATEDIFF(day,a1.event_date,a2.event_date) =1-- and a2.event_date
+
+
+with cte as
+(
+select 
+player_id,
+min(event_date) as firstlogin
+from activity
+group by player_id
+),next as
+(
+select c.player_id
+from cte c inner join activity a
+on c.player_id=a.player_id
+and datediff(day,c.firstlogin,a.event_date)=1
+)
+select 
+round((count(distinct n.player_id)*1.0/count(distinct c.player_id)*1.0),2) as fraction from cte c left join next n
+on c.player_id=n.player_id;
