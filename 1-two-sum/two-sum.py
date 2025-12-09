@@ -1,7 +1,25 @@
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        for x in range(0,len(nums)-1):
-            for y in range(x+1,len(nums)):
-                if(nums[x]+nums[y]==target):
-                    return [x,y]
+        new_nums=nums.copy()
+        new_nums.sort()
+        i=0
+        j=len(nums)-1
+        while(i<j):
+
+            if(new_nums[i]+new_nums[j]==target):
+
+                if(new_nums[i]==new_nums[j]):
+
+                    return [nums.index(new_nums[i]),nums.index(new_nums[j],nums.index(new_nums[i])+1)]
+                else:
+
+                    return [nums.index(new_nums[i]),nums.index(new_nums[j])]   
+            elif(new_nums[i]+new_nums[j]<target):
+
+                i=i+1
+            else:
+
+                j=j-1
+                
+
         
