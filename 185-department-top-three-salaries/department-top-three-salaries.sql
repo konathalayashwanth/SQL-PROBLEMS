@@ -1,18 +1,14 @@
-/* Write your T-SQL query statement below */
-select
-department,
-employee,
-salary
-from
+with cte as
 (
-    select 
-    d.name as department,
-    e.name as employee,
-    e.salary as salary,
-    dense_rank() over(partition by d.name order by e.salary desc) as rankno
-    from 
-    employee e join department d
-    on d.id=e.departmentid
-) as h
-where h.rankno<4
-order by 3 desc;
+select 
+e.name as employee,
+e.salary,
+d.name  as department,
+dense_rank() over(partition by d.name order by e.salary desc) as rn
+from
+employee e inner join department d
+on e.departmentId=d.id
+)
+select department,employee,salary
+from cte
+where rn<4;
